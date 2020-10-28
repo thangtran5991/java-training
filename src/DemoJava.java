@@ -1,12 +1,10 @@
 public class DemoJava {
     public static void main(String[] args) {
-            String input = "Dimage Share";
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(input);
-            stringBuilder.reverse();
-            for (int i = 0; i < stringBuilder.length(); i++) {
-                System.out.print(stringBuilder.charAt(i));
-            }
-
+        StringBuilder stringBuilder = new StringBuilder("Dimage Share");
+        char[] chars = new char[12];
+        stringBuilder.getChars(0, 12, chars, 0);
+        for (int i = chars.length - 1; i >= 0; i--) {
+            System.out.print(chars[i]);
+        }
     }
 }
