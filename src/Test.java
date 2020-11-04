@@ -1,18 +1,12 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Test {
     public static void main(String[] args) {
         Test t1 = new Test();
         ArrayList<String> arrayList = new ArrayList<String>();
-        arrayList.add("abc");
-        arrayList.add("bcd");
-        arrayList.add("bbb");
-        arrayList.add("ace");
-        arrayList.add("snb");
-        arrayList.add("aaaa");
-        arrayList.add("bbbbb");
-        arrayList.add("eeee");
+        arrayList.addAll(Arrays.asList("abc", "bcd", "bbb", "ace", "snb", "aaaa", "bbbbb", "eeee"));
         t1.groupString(arrayList);
     }
 
