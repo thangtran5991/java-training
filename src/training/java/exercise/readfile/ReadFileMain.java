@@ -63,6 +63,7 @@ public class ReadFileMain {
             for (int j = 0; j < lineList.size(); j++) {
                 if (j == i) {
                     logInfos[j] = new LogInfo(adId, siteId, logType, cost, wholesale);
+                    System.out.println("ad_id: " +logInfos[j].getAdId() + ", " + "site_id: " +logInfos[j].getSiteId() + ", " + "cost: " +logInfos[j].getCost() + ", " + "wholesale: " +logInfos[j].getWholesale());
                 }
             }
         }
@@ -85,12 +86,6 @@ public class ReadFileMain {
             }
         }
 
-        // Print
-        System.out.println("Ad_Id    " + "Cost");
-        for (Map.Entry<Integer, Integer> entry : costAdId.entrySet()) {
-            System.out.println(entry.getKey() + "        " + entry.getValue());
-        }
-
         // Statistic wholesale with adId
         Map<Integer, Integer> wholesaleAdId =  new HashMap<>();
         for (int i = 0; i < logInfos.length; i++) {
@@ -110,10 +105,8 @@ public class ReadFileMain {
         }
 
         // Print
-        System.out.println("Ad_Id    " + "Wholesale");
-        for (Map.Entry<Integer, Integer> entry : wholesaleAdId.entrySet()) {
-            System.out.println(entry.getKey() + "        " + entry.getValue());
-        }
+        System.out.println("\nAdId  " + "  Cost  " + "  Wholesale");
+        costAdId.forEach((p, n) -> System.out.format("%d       %d$       %d$\n", p, n, wholesaleAdId.get(p)));
 
         // Statistic cost with siteId
         Map<Integer, Integer> costSiteId =  new HashMap<>();
@@ -131,12 +124,6 @@ public class ReadFileMain {
             } else {
                 costSiteId.put(logInfos[i].getSiteId(), logInfos[i].getCost());
             }
-        }
-
-        // Print
-        System.out.println("Site_Id    " + "Cost");
-        for (Map.Entry<Integer, Integer> entry : costSiteId.entrySet()) {
-            System.out.println(entry.getKey() + "          " + entry.getValue());
         }
 
         // Statistic wholesale with siteId
@@ -158,9 +145,51 @@ public class ReadFileMain {
         }
 
         // Print
-        System.out.println("Site_Id    " + "Wholesale");
-        for (Map.Entry<Integer, Integer> entry : wholesaleSiteId.entrySet()) {
-            System.out.println(entry.getKey() + "          " + entry.getValue());
+        System.out.println("\nSiteId  " + "Cost  " + "  Wholesale");
+        costSiteId.forEach((p, n) -> System.out.format("%d       %d$       %d$\n", p, n, wholesaleSiteId.get(p)));
+        System.out.println();
+
+        //Two key map
+        Map<MapKey, Integer> costAdIdSiteId = new HashMap<>();
+        for (int i = 0; i < logInfos.length; i++) {
+            MapKey mapKey = new MapKey(logInfos[i].getAdId(), logInfos[i].getSiteId());
+            Boolean check = costAdIdSiteId.containsKey(mapKey);
+            if (check) {
+                for (Map.Entry<MapKey, Integer> entry : costAdIdSiteId.entrySet()) {
+                    if ((logInfos[i].getAdId() == entry.getKey().getKey1()) && (logInfos[i].getSiteId() == entry.getKey().getKey2())) {
+                        int cost = entry.getValue() + logInfos[i].getCost();
+                        costAdIdSiteId.replace(mapKey, cost);
+                    }
+                }
+            } else {
+                costAdIdSiteId.put(mapKey, logInfos[i].getCost());
+            }
+        }
+
+        Map<MapKey, Integer> wholesaleAdIdSiteId = new HashMap<>();
+        for (int i = 0; i < logInfos.length; i++) {
+            MapKey mapKey = new MapKey(logInfos[i].getAdId(), logInfos[i].getSiteId());
+            Boolean check = wholesaleAdIdSiteId.containsKey(mapKey);
+            if (check) {
+                for (Map.Entry<MapKey, Integer> entry : wholesaleAdIdSiteId.entrySet()) {
+                    if ((logInfos[i].getAdId() == entry.getKey().getKey1()) && (logInfos[i].getSiteId() == entry.getKey().getKey2())) {
+                        int wholesale = entry.getValue() + logInfos[i].getWholesale();
+                        wholesaleAdIdSiteId.replace(mapKey, wholesale);
+                    }
+                }
+            } else {
+                wholesaleAdIdSiteId.put(mapKey, logInfos[i].getWholesale());
+            }
+        }
+
+        // Prinf
+        System.out.println("Ad_Id" + "    SiteId" + "     Cost" + "    Wholesale");
+        for (MapKey mapKey : costAdIdSiteId.keySet()) {
+            System.out.print(mapKey.getKey1() + "        ");
+            System.out.print(mapKey.getKey2() + "          ");
+            System.out.print(costAdIdSiteId.get(mapKey) + "$     ");
+            System.out.print(wholesaleAdIdSiteId.get(mapKey) + "$");
+            System.out.println();
         }
     }
 }
