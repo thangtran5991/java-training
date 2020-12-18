@@ -18,23 +18,23 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ReadFile implements Callable<List<String>> {
-    FileList fileLists;
+public class ReadFileThread implements Callable<List<String>> {
+    FileInfo fileInfo;
 
-    public ReadFile(FileList fileList) {
-        this.fileLists = fileList;
+    public ReadFileThread(FileInfo fileInfo) {
+        this.fileInfo = fileInfo;
     }
 
     @Override
     public List<String> call() {
-        String fileName = fileLists.getFileName();
+        String fileName = fileInfo.getFileName();
         List<String> list = new ArrayList<>();
 
         // Synchronized block code to read multifile by muti thread
-        synchronized (fileLists) {
-            if (fileLists.getIsRead() == false) {
-                fileName = fileLists.getFileName();
-                fileLists.setIsRead(false);
+        synchronized (fileInfo) {
+            if (fileInfo.isRead() == false) {
+                fileName = fileInfo.getFileName();
+                fileInfo.setIsRead(false);
             }
         }
         try (Stream<String> stream = Files.lines(Paths.get(fileName))) {

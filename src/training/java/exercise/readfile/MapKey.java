@@ -3,41 +3,33 @@ package training.java.exercise.readfile;
 import java.util.Objects;
 
 public class MapKey {
-    private int key1;
-    private int key2;
+    private int adId;
+    private int siteId;
 
-    public MapKey(int key1, int key2) {
-        this.key1 = key1;
-        this.key2 = key2;
+    public MapKey(int adId, int siteId) {
+        this.adId = adId;
+        this.siteId = siteId;
     }
 
-    public int getKey1() {
-        return key1;
+    public int getAdId() {
+        return adId;
     }
 
-    public void setKey1(int key1) {
-        this.key1 = key1;
-    }
-
-    public int getKey2() {
-        return key2;
-    }
-
-    public void setKey2(int key2) {
-        this.key2 = key2;
+    public int getSiteId() {
+        return siteId;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MapKey mapKey = (MapKey) o;
-        return key1 == mapKey.key1 &&
-                key2 == mapKey.key2;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        MapKey mapKey = (MapKey) obj;
+        return adId == mapKey.adId &&
+                siteId == mapKey.siteId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(key1, key2);
+        return Objects.hash(adId, siteId);
     }
 }

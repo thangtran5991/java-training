@@ -9,11 +9,11 @@
  */
 package training.java.exercise.readfile;
 
-public class FileList {
+public class FileInfo {
     private String fileName;
     private Boolean isRead;
 
-    public FileList(String fileName, Boolean isRead) {
+    public FileInfo(String fileName, Boolean isRead) {
         this.fileName = fileName;
         this.isRead = isRead;
     }
@@ -26,7 +26,7 @@ public class FileList {
         return fileName;
     }
 
-    public Boolean getIsRead() {
+    public Boolean isRead() {
         return isRead;
     }
 }
