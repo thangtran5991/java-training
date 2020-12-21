@@ -67,6 +67,44 @@ public class ReadFileMain {
         }
 
         // Statistic cost with adId
+        Map<Integer, Integer> costAdId = statisticCostAdid(logInfoList);
+
+        // Statistic wholesale with adId
+        Map<Integer, Integer> wholesaleAdId =  statisticWholesaleAdid(logInfoList);
+
+        // Print
+        System.out.println("\nAdId  " + "  Cost  " + "  Wholesale");
+        costAdId.forEach((p, n) -> System.out.format("%d       %d$       %d$\n", p, n, wholesaleAdId.get(p)));
+
+        // Statistic cost with siteId
+        Map<Integer, Integer> costSiteId =  statisticCostSiteid(logInfoList);
+
+        // Statistic wholesale with siteId
+        Map<Integer, Integer> wholesaleSiteId =  statisticWholesaleSiteid(logInfoList);
+
+        // Print
+        System.out.println("\nSiteId  " + "Cost  " + "  Wholesale");
+        costSiteId.forEach((p, n) -> System.out.format("%d       %d$       %d$\n", p, n, wholesaleSiteId.get(p)));
+        System.out.println();
+
+        //Statistic cost with adId and siteId
+        Map<MapKey, Integer> costAdIdSiteId = statisticCostAdidSiteid(logInfoList);
+
+        //Stistic wholesale with adId and siteId
+        Map<MapKey, Integer> wholesaleAdIdSiteId = statisticWholesaleAdidSiteid(logInfoList);
+
+        // Prinf
+        System.out.println("Ad_Id" + "    SiteId" + "     Cost" + "    Wholesale");
+        for (MapKey mapKey : costAdIdSiteId.keySet()) {
+            System.out.print(mapKey.getAdId() + "        ");
+            System.out.print(mapKey.getSiteId() + "          ");
+            System.out.print(costAdIdSiteId.get(mapKey) + "$     ");
+            System.out.print(wholesaleAdIdSiteId.get(mapKey) + "$");
+            System.out.println();
+        }
+    }
+
+    public static Map statisticCostAdid(List<LogInfo> logInfoList) {
         Map<Integer, Integer> costAdId =  new HashMap<>();
         for (LogInfo item : logInfoList) {
             Boolean check = costAdId.containsKey(item.getAdId());
@@ -80,7 +118,10 @@ public class ReadFileMain {
             }
         }
 
-        // Statistic wholesale with adId
+        return costAdId;
+    }
+
+    public static Map statisticWholesaleAdid(List<LogInfo> logInfoList) {
         Map<Integer, Integer> wholesaleAdId =  new HashMap<>();
         for (LogInfo item : logInfoList) {
             Boolean check = wholesaleAdId.containsKey(item.getAdId());
@@ -94,11 +135,10 @@ public class ReadFileMain {
             }
         }
 
-        // Print
-        System.out.println("\nAdId  " + "  Cost  " + "  Wholesale");
-        costAdId.forEach((p, n) -> System.out.format("%d       %d$       %d$\n", p, n, wholesaleAdId.get(p)));
+        return wholesaleAdId;
+    }
 
-        // Statistic cost with siteId
+    public static Map statisticCostSiteid(List<LogInfo> logInfoList) {
         Map<Integer, Integer> costSiteId =  new HashMap<>();
         for (LogInfo item : logInfoList) {
             Boolean check = costSiteId.containsKey(item.getSiteId());
@@ -112,7 +152,10 @@ public class ReadFileMain {
             }
         }
 
-        // Statistic wholesale with siteId
+        return costSiteId;
+    }
+
+    public static Map statisticWholesaleSiteid(List<LogInfo> logInfoList) {
         Map<Integer, Integer> wholesaleSiteId =  new HashMap<>();
         for (LogInfo item : logInfoList) {
             Boolean check = wholesaleSiteId.containsKey(item.getSiteId());
@@ -126,16 +169,16 @@ public class ReadFileMain {
             }
         }
 
-        // Print
-        System.out.println("\nSiteId  " + "Cost  " + "  Wholesale");
-        costSiteId.forEach((p, n) -> System.out.format("%d       %d$       %d$\n", p, n, wholesaleSiteId.get(p)));
-        System.out.println();
+        return wholesaleSiteId;
+    }
 
-        //Two key map
+    public static Map statisticCostAdidSiteid(List<LogInfo> logInfoList) {
         Map<MapKey, Integer> costAdIdSiteId = new HashMap<>();
         for (LogInfo item : logInfoList) {
             MapKey mapKey = new MapKey(item.getAdId(), item.getSiteId());
             Boolean check = costAdIdSiteId.containsKey(mapKey);
+
+            // Check exist mapKey in map
             if (check) {
                 int cost = costAdIdSiteId.get(mapKey) + item.getCost();
                 costAdIdSiteId.replace(mapKey, cost);
@@ -144,10 +187,16 @@ public class ReadFileMain {
             }
         }
 
+        return costAdIdSiteId;
+    }
+
+    public static Map statisticWholesaleAdidSiteid(List<LogInfo> logInfoList) {
         Map<MapKey, Integer> wholesaleAdIdSiteId = new HashMap<>();
         for (LogInfo item : logInfoList) {
             MapKey mapKey = new MapKey(item.getAdId(), item.getSiteId());
             Boolean check = wholesaleAdIdSiteId.containsKey(mapKey);
+
+            // Check exist mapKey in map
             if (check) {
                 int wholesale = wholesaleAdIdSiteId.get(mapKey) + item.getWholesale();
                 wholesaleAdIdSiteId.replace(mapKey, wholesale);
@@ -156,14 +205,6 @@ public class ReadFileMain {
             }
         }
 
-        // Prinf
-        System.out.println("Ad_Id" + "    SiteId" + "     Cost" + "    Wholesale");
-        for (MapKey mapKey : costAdIdSiteId.keySet()) {
-            System.out.print(mapKey.getAdId() + "        ");
-            System.out.print(mapKey.getSiteId() + "          ");
-            System.out.print(costAdIdSiteId.get(mapKey) + "$     ");
-            System.out.print(wholesaleAdIdSiteId.get(mapKey) + "$");
-            System.out.println();
-        }
+        return wholesaleAdIdSiteId;
     }
 }
