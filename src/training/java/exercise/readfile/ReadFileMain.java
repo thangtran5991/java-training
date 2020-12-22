@@ -9,6 +9,7 @@
  */
 package training.java.exercise.readfile;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 public class ReadFileMain {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // Create array of files
         FileInfo[] fileInfos = new FileInfo[10];
         fileInfos[0] = new FileInfo("/var/admage/log/file1.log", false);
@@ -65,16 +66,12 @@ public class ReadFileMain {
             System.out.println("ad_id: " +logInfo.getAdId() + ", " + "site_id: " +logInfo.getSiteId() + ", " + "cost: " +logInfo.getCost() + ", " + "wholesale: " +logInfo.getWholesale());
             logInfoList.add(logInfo);
         }
-
+        System.out.println();
         // Statistic cost with adId
         Map<Integer, Integer> costAdId = statisticCostAdid(logInfoList);
 
         // Statistic wholesale with adId
         Map<Integer, Integer> wholesaleAdId =  statisticWholesaleAdid(logInfoList);
-
-        // Print
-        System.out.println("\nAdId  " + "  Cost  " + "  Wholesale");
-        costAdId.forEach((p, n) -> System.out.format("%d       %d$       %d$\n", p, n, wholesaleAdId.get(p)));
 
         // Statistic cost with siteId
         Map<Integer, Integer> costSiteId =  statisticCostSiteid(logInfoList);
@@ -82,24 +79,63 @@ public class ReadFileMain {
         // Statistic wholesale with siteId
         Map<Integer, Integer> wholesaleSiteId =  statisticWholesaleSiteid(logInfoList);
 
-        // Print
-        System.out.println("\nSiteId  " + "Cost  " + "  Wholesale");
-        costSiteId.forEach((p, n) -> System.out.format("%d       %d$       %d$\n", p, n, wholesaleSiteId.get(p)));
-        System.out.println();
-
         //Statistic cost with adId and siteId
         Map<MapKey, Integer> costAdIdSiteId = statisticCostAdidSiteid(logInfoList);
 
         //Stistic wholesale with adId and siteId
         Map<MapKey, Integer> wholesaleAdIdSiteId = statisticWholesaleAdidSiteid(logInfoList);
 
+        //Get adName from file
+        List<String> adNameList = getAdName("/var/admage/log/fileadname.log");
+        Map<Integer, String> adInfoMap = new HashMap<>();
+        for (String item : adNameList) {
+            String[] stringLine = item.split("\t");
+            int id = Integer.parseInt(stringLine[0]);
+            String name = stringLine[1];
+            adInfoMap.put(id, name);
+        }
+
+        //Get siteName from file
+        List<String> siteNameList = getSiteName("/var/admage/log/filesitename.log");
+        Map<Integer, String> siteInfoMap = new HashMap<>();
+        for (String item : siteNameList) {
+            String[] stringLine = item.split("\t");
+            int id = Integer.parseInt(stringLine[0]);
+            String name = stringLine[1];
+            siteInfoMap.put(id, name);
+        }
+
+        //Print
+        System.out.println("AdId" + "    Name" + "     Cost" + "    Wholesale");
+        for (Map.Entry<Integer, String> entry : adInfoMap.entrySet()) {
+            System.out.print(entry.getKey() + "       ");
+            System.out.print(entry.getValue() + "    ");
+            System.out.print(costAdId.get(entry.getKey()) + "$   ");
+            System.out.print(wholesaleAdId.get(entry.getKey()) + "$");
+            System.out.println();
+        }
+        System.out.println();
+
+        //Print
+        System.out.println("SiteId" + "    Name" + "     Cost" + "    Wholesale");
+        for (Map.Entry<Integer, String> entry : siteInfoMap.entrySet()) {
+            System.out.print(entry.getKey() + "       ");
+            System.out.print(entry.getValue() + "    ");
+            System.out.print(costSiteId.get(entry.getKey()) + "$   ");
+            System.out.print(wholesaleSiteId.get(entry.getKey()) + "$");
+            System.out.println();
+        }
+        System.out.println();
+
         // Prinf
-        System.out.println("Ad_Id" + "    SiteId" + "     Cost" + "    Wholesale");
-        for (MapKey mapKey : costAdIdSiteId.keySet()) {
-            System.out.print(mapKey.getAdId() + "        ");
-            System.out.print(mapKey.getSiteId() + "          ");
-            System.out.print(costAdIdSiteId.get(mapKey) + "$     ");
-            System.out.print(wholesaleAdIdSiteId.get(mapKey) + "$");
+        System.out.println("Ad_Id" + "    AdName" + "    SiteId" + "    SiteName" + "      Cost" + "    Wholesale");
+        for (Map.Entry<MapKey, Integer> entry : costAdIdSiteId.entrySet()) {
+            System.out.print(entry.getKey().getAdId() + "        ");
+            System.out.print(adInfoMap.get(entry.getKey().getAdId()) + "        ");
+            System.out.print(entry.getKey().getSiteId() + "        ");
+            System.out.print(siteInfoMap.get(entry.getKey().getSiteId()) + "      ");
+            System.out.print(costAdIdSiteId.get(entry.getKey()) + "$     ");
+            System.out.print(wholesaleAdIdSiteId.get(entry.getKey()) + "$");
             System.out.println();
         }
     }
@@ -206,5 +242,29 @@ public class ReadFileMain {
         }
 
         return wholesaleAdIdSiteId;
+    }
+
+    public static List getAdName(String fileName) throws IOException {
+        List<String> lineList = new ArrayList<>();
+        File file = new File(fileName);
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+        String line;
+        bufferedReader.readLine();
+        while ((line = bufferedReader.readLine()) != null)
+            lineList.add(line);
+
+        return lineList;
+    }
+
+    public static List getSiteName(String fileName) throws IOException {
+        List<String> lineList = new ArrayList<>();
+        File file = new File(fileName);
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+        String line;
+        bufferedReader.readLine();
+        while ((line = bufferedReader.readLine()) != null)
+            lineList.add(line);
+
+        return lineList;
     }
 }
